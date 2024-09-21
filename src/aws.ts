@@ -1,7 +1,7 @@
 import AWS from 'aws-sdk';
 import { AWSRegions } from './types/aws';
-import { Vendor } from 'aws-sdk/clients/directconnect';
-import { marshall } from '@aws-sdk/util-dynamodb';
+import { Vendor } from './types/twitter';
+import { Converter } from 'aws-sdk/clients/dynamodb';
 
 AWS.config.update({region: AWSRegions.EU_CENTRAL_1});
 
@@ -59,12 +59,12 @@ export const dynamodbCreateRecord = async (tableName: string, vendor: Vendor) =>
     try{
         await dynamodb.putItem({
             TableName: tableName,
-            Item: marshall(vendor)
+            Item: Converter.marshall(vendor)
         }).promise();
-        console.log('Record Error');
+        console.log('Record created..');
     } catch(e){
         if(e instanceof Error){
-            throw e
+            return e
         }
         return new Error(`dynamodbCreateRecord error object unknown type`);
     }
